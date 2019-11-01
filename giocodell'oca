@@ -4,8 +4,9 @@ import java.util.*;
 
 public class ProvaOca {
 	public static void main (String[] args) throws IOException {
+	//inizializzo le variabili	
 	int max = 6;
-	String[] Nickname= {"-","-","-","-","-","-"};
+	String[] Nickname= {" "," "," "," "," "," "};
 	int[] pos_att= new int [max];
 	int[] pos_pre= new int [max];
 	int[]y={5, 9, 14, 18, 23, 27};
@@ -22,20 +23,27 @@ public class ProvaOca {
 	
 	InputStreamReader input=new InputStreamReader(System.in);
 	BufferedReader h= new BufferedReader(input);
+	System.out.println("Start");
+		//metodo per l'inserimento del contatore dell'array
 		do {
 			System.out.println("inserire numero giocatori:");
 			String valoreLetto=h.readLine().trim();
+			//errore con ricorsione in caso l'utente inserisse una qualsiasi stringa al posto dell'integer
 				try {
 					n = Integer.parseInt(valoreLetto);
 					n_intero=false;
 				}catch (Exception e) {
 					System.out.println("Non hai inserito un Numero");
 					n_intero=true;}
+				if(n>6) {System.out.println("il limite massimo di giocatori è 6");
+				n_intero=true;}
 		}while (n_intero==true);
+		//inserimento nomi utenti
 		for( i=0; i<n; i++) {
 			System.out.println("inserire Nickname: ");
 			Player = h.readLine().trim().toLowerCase();
 			Nickname[i] = Player;
+			//ricorsione per l'omonimia
 			for (int p=0;p<n-1;p++) {
 				for(int o=1+p; o<n; o++ ) {
 					if(Nickname[p].equals(Nickname[o])) {
@@ -50,11 +58,19 @@ public class ProvaOca {
 							}
 						}}while(trovato==true);
 					}}}
+		//visualizzazione nominativi partecipanti
+		System.out.println("i giocatori sono;");
+		for(int stamp=0; stamp<n; stamp++) {
+		      System.out.println(Nickname[stamp]+" ");
+		  }
+				
+		//inizio del ciclo per la partita
 		while(vittoria==false){
 			for (k=0;k<n;k++) {
 				do {
 					System.out.println("muove il giocatore: ");
 					Nick = h.readLine().trim().toLowerCase();
+					//ciclo per cambiare l'ordine in caso di scambio posizione dei nomi
 					for (int x=0;x<n;x++) {
 						if(Nick.equals(Nickname[x])) {
 							spost=Nickname[k];
@@ -66,6 +82,7 @@ public class ProvaOca {
 							s_num=pos_att[k];
 							pos_att[k]=pos_att[x];
 							pos_att[x]=s_num;}}
+					//inizio simulazione lancio dei dadi e spostamenti su tabella
 					if (Nickname[k].equals(Nick)){
 						trova_nome=false;
 						d1= 1+randomNumbers.nextInt(6);
@@ -73,10 +90,12 @@ public class ProvaOca {
 						pos_pre[k]= pos_att[k];
 						pos_att[k]= pos_att[k] + d2 + d1; 
 						System.out.println(Nickname[k]+" ha tirato "+ d1 +", "+d2+". "+Nickname[k]+" muove da "+pos_pre[k]+" a "+pos_att[k]);
+						//spostamento in caso della casella ponte
 						if (pos_att[k]==6) {
 							System.out.println(Nickname[k]+" è al ponte quindi arriva diretto alla casella 12");
 							pos_att[k]=12;
 						}
+						//spostamento nel caso delle caselle "oca"
 						for (int v=0; v<n;v++) {
 							for (int z=0;z<y.length; z++) {
 								if (pos_att[k]==y[z]) {
@@ -85,14 +104,17 @@ public class ProvaOca {
 							}if (pos_att[k]>63) {
 								pos_att[k]= 63-(pos_att[k]-63);
 								System.out.println(Nickname[k]+" ha totalizzato più di 63, tornerà alla casella "+pos_att[k]);
+								//messaggio e cambiamento del flag in caso di vittoria
 							}else if(pos_att[k]==63 && vittoria==false){
 								System.out.println("vince il giocatore "+Nickname[k]);
 								vittoria=true;}
+							//iterazione nel caso scherzetto con due pedine sulla stessa casella
 							for(int q=0; q<n;q++) {
 								if(pos_att[q]==pos_att[k]&&pos_att[q]!=0 && q!=k&& posizione==false){
 									posizione=true;
 									System.out.println("Sulla casella "+pos_att[q]+" si trova "+ Nickname[q]+" che torna alla casella " + pos_pre[k]);
 									pos_att[q]=pos_pre[k];
 								}}}}else {trova_nome = true;
+								//messaggio in caso il nome inserito non esista nell'array
 								System.out.println("Non hai inserito un nome corretto");}
 				}while (trova_nome==true);}}}}
