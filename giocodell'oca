@@ -1,0 +1,98 @@
+package oca;
+import java.io.*;
+import java.util.*;
+
+public class ProvaOca {
+	public static void main (String[] args) throws IOException {
+	int max = 6;
+	String[] Nickname= {"-","-","-","-","-","-"};
+	int[] pos_att= new int [max];
+	int[] pos_pre= new int [max];
+	int[]y={5, 9, 14, 18, 23, 27};
+	int i,d1,d2,s_num;
+	int n=0;
+	int k=0;
+	boolean trovato = false;
+	Random randomNumbers = new Random();
+	String Player, Nick,spost;
+	boolean n_intero=false;
+	boolean vittoria=false;
+	boolean trova_nome=false;
+	boolean posizione = false;
+	
+	InputStreamReader input=new InputStreamReader(System.in);
+	BufferedReader h= new BufferedReader(input);
+		do {
+			System.out.println("inserire numero giocatori:");
+			String valoreLetto=h.readLine().trim();
+				try {
+					n = Integer.parseInt(valoreLetto);
+					n_intero=false;
+				}catch (Exception e) {
+					System.out.println("Non hai inserito un Numero");
+					n_intero=true;}
+		}while (n_intero==true);
+		for( i=0; i<n; i++) {
+			System.out.println("inserire Nickname: ");
+			Player = h.readLine().trim().toLowerCase();
+			Nickname[i] = Player;
+			for (int p=0;p<n-1;p++) {
+				for(int o=1+p; o<n; o++ ) {
+					if(Nickname[p].equals(Nickname[o])) {
+						trovato = true;}
+					do {
+						if(trovato==true) {
+							System.out.println("Nickname già presente! Modificarlo:");
+							Player = h.readLine().trim();
+							Nickname[o] = Player;
+							if(!Player.equals(Nickname[p])) {
+								trovato=false;
+							}
+						}}while(trovato==true);
+					}}}
+		while(vittoria==false){
+			for (k=0;k<n;k++) {
+				do {
+					System.out.println("muove il giocatore: ");
+					Nick = h.readLine().trim().toLowerCase();
+					for (int x=0;x<n;x++) {
+						if(Nick.equals(Nickname[x])) {
+							spost=Nickname[k];
+							Nickname[k]=Nickname[x];
+							Nickname[x]=spost;
+							s_num=pos_pre[k];
+							pos_pre[k]=pos_pre[x];
+							pos_pre[x]=s_num;
+							s_num=pos_att[k];
+							pos_att[k]=pos_att[x];
+							pos_att[x]=s_num;}}
+					if (Nickname[k].equals(Nick)){
+						trova_nome=false;
+						d1= 1+randomNumbers.nextInt(6);
+						d2= 1+randomNumbers.nextInt(6);
+						pos_pre[k]= pos_att[k];
+						pos_att[k]= pos_att[k] + d2 + d1; 
+						System.out.println(Nickname[k]+" ha tirato "+ d1 +", "+d2+". "+Nickname[k]+" muove da "+pos_pre[k]+" a "+pos_att[k]);
+						if (pos_att[k]==6) {
+							System.out.println(Nickname[k]+" è al ponte quindi arriva diretto alla casella 12");
+							pos_att[k]=12;
+						}
+						for (int v=0; v<n;v++) {
+							for (int z=0;z<y.length; z++) {
+								if (pos_att[k]==y[z]) {
+									pos_att[k]=pos_att[k] + d1 + d2;
+									System.out.println("l'oca, "+Nickname[k]+" muove sulla casella " +pos_att[k]);}
+							}if (pos_att[k]>63) {
+								pos_att[k]= 63-(pos_att[k]-63);
+								System.out.println(Nickname[k]+" ha totalizzato più di 63, tornerà alla casella "+pos_att[k]);
+							}else if(pos_att[k]==63 && vittoria==false){
+								System.out.println("vince il giocatore "+Nickname[k]);
+								vittoria=true;}
+							for(int q=0; q<n;q++) {
+								if(pos_att[q]==pos_att[k]&&pos_att[q]!=0 && q!=k&& posizione==false){
+									posizione=true;
+									System.out.println("Sulla casella "+pos_att[q]+" si trova "+ Nickname[q]+" che torna alla casella " + pos_pre[k]);
+									pos_att[q]=pos_pre[k];
+								}}}}else {trova_nome = true;
+								System.out.println("Non hai inserito un nome corretto");}
+				}while (trova_nome==true);}}}}
